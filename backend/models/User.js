@@ -21,6 +21,12 @@ const ExperienceSchema = new mongoose.Schema({
   description: { type: String }
 });
 
+const ProjectSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String },
+  link: { type: String }
+});
+
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -56,12 +62,34 @@ const UserSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  // Extra profile fields for professional portfolios
+  headline: {
+    type: String,
+    trim: true
+  },
+  about: {
+    type: String,
+    trim: true
+  },
   skills: [{
     type: String,
     trim: true
   }],
   education: [EducationSchema],
   experience: [ExperienceSchema],
+  projects: [ProjectSchema],
+  certifications: [{
+    type: String,
+    trim: true
+  }],
+  preferredJobType: {
+    type: String,
+    enum: ['Full-time', 'Part-time', 'Internship', 'Remote', 'Hybrid', '']
+  },
+  preferredLocation: {
+    type: String,
+    trim: true
+  },
   resume: {
     type: String
   },

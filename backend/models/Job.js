@@ -32,11 +32,11 @@ const JobSchema = new mongoose.Schema({
     enum: ['Full-time', 'Part-time', 'Internship', 'Remote', 'Hybrid']
   },
   experience: {
-    type: String, // e.g. "0-2 years", "3+ years"
+    type: String,
     required: [true, 'Experience requirement is required']
   },
   salary: {
-    type: Number, // Annual or Monthly salary in numbers
+    type: Number,
     required: [true, 'Salary is required']
   },
   skills: [{
@@ -51,6 +51,16 @@ const JobSchema = new mongoose.Schema({
     type: String,
     trim: true
   }],
+  // Expanded fields from the master specification
+  benefits: [{
+    type: String,
+    trim: true
+  }],
+  status: {
+    type: String,
+    enum: ['Draft', 'Active', 'Closed'],
+    default: 'Active'
+  },
   deadline: {
     type: Date
   }

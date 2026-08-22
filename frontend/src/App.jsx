@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import MainLayout from './layouts/MainLayout';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import { Toaster } from 'react-hot-toast';
 
 // Public Pages
 import Home from './pages/Home';
@@ -18,12 +19,15 @@ import SeekerDashboard from './pages/seeker/Dashboard';
 import SeekerProfile from './pages/seeker/Profile';
 import SeekerApplications from './pages/seeker/Applications';
 import SeekerRecommendations from './pages/seeker/Recommendations';
+import SavedJobs from './pages/seeker/SavedJobs';
+import SeekerInterviews from './pages/seeker/Interviews';
 
 // Recruiter Protected Pages
 import RecruiterDashboard from './pages/recruiter/Dashboard';
 import CompanyProfile from './pages/recruiter/Company';
 import CreateJob from './pages/recruiter/CreateJob';
 import JobApplicants from './pages/recruiter/Applicants';
+import RecruiterInterviews from './pages/recruiter/Interviews';
 
 // Admin Protected Pages
 import AdminDashboard from './pages/admin/Dashboard';
@@ -32,6 +36,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
+        <Toaster position="top-right" reverseOrder={false} />
         <MainLayout>
           <Routes>
             {/* Public Routes */}
@@ -76,6 +81,22 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/seeker/saved-jobs"
+              element={
+                <ProtectedRoute allowedRoles={['seeker']}>
+                  <SavedJobs />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seeker/interviews"
+              element={
+                <ProtectedRoute allowedRoles={['seeker']}>
+                  <SeekerInterviews />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Recruiter Guards */}
             <Route
@@ -107,6 +128,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['recruiter']}>
                   <JobApplicants />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/recruiter/interviews"
+              element={
+                <ProtectedRoute allowedRoles={['recruiter']}>
+                  <RecruiterInterviews />
                 </ProtectedRoute>
               }
             />

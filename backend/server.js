@@ -13,6 +13,9 @@ const applicationRoutes = require('./routes/applicationRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const aiRoutes = require('./routes/aiRoutes');
+const interviewRoutes = require('./routes/interviewRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const savedJobRoutes = require('./routes/savedJobRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -41,6 +44,9 @@ app.use('/api/applications', applicationRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/recommendations', aiRoutes);
+app.use('/api/interviews', interviewRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/saved-jobs', savedJobRoutes);
 
 // Basic Root Route / Health Check API
 app.get('/api/health', (req, res) => {

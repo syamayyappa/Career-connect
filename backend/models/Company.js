@@ -20,7 +20,19 @@ const CompanySchema = new mongoose.Schema({
     trim: true
   },
   logo: {
-    type: String // Storage path or URL
+    type: String
+  },
+  // Expanded fields from the master specification
+  industry: {
+    type: String,
+    trim: true
+  },
+  employees: {
+    type: Number,
+    default: 1
+  },
+  foundedYear: {
+    type: Number
   },
   recruiter: {
     type: mongoose.Schema.Types.ObjectId,

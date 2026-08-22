@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import API from '../../services/api';
-import { Settings, Users, Briefcase, FileText, Trash2, CheckCircle2, AlertTriangle, ShieldCheck, User } from 'lucide-react';
+import { Settings, Users, Briefcase, FileText, Trash2, CheckCircle2, AlertTriangle, ShieldCheck, User, BarChart3, PieChart, ShieldAlert } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import toast from 'react-hot-toast';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -8,17 +11,20 @@ const AdminDashboard = () => {
     recruitersCount: 0,
     jobsCount: 0,
     companiesCount: 0,
-    applicationsCount: 0
+    applicationsCount: 0,
+    reportsCount: 0
   });
 
   const [users, setUsers] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('stats'); // 'stats' | 'users' | 'jobs' | 'applications'
+  const [activeTab, setActiveTab] = useState('stats'); // 'stats' | 'users' | 'jobs' | 'applications' | 'reports'
 
-  const [successMsg, setSuccessMsg] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  // Chart datasets
+  const [userDistributionData, setUserDistributionData] = useState([]);
+  const [platformTotalsData, setPlatformTotalsData] = useState([]);
 
   const fetchAdminData = async () => {
     setLoading(true);
@@ -27,6 +33,19 @@ const AdminDashboard = () => {
       const statsRes = await API.get('/admin/stats');
       if (statsRes.data.success) {
         setStats(statsRes.data.data);
+        
+        // Build user distribution chart
+        setUserDistributionData([
+          { role: 'Job Seekers', count: statsRes.data.data.seekersCount },
+          { role: 'Recruiters', count: statsRes.data.data.recruitersCount }
+        ]);
+
+        // Build platform totals chart
+        setPlatformTotalsData([
+          { name: 'Companies', total: statsRes.data.data.companiesCount },
+          { name: 'Jobs', total: statsRes.data.data.jobsCount },
+          { name: 'Applications', total: statsRes.data.data.applicationsCount }
+        ]);
       }
 
       // 2. Fetch users
@@ -46,9 +65,15 @@ const AdminDashboard = () => {
       if (appsRes.data.success) {
         setApplications(appsRes.data.data);
       }
+
+      // 5. Fetch moderation reports
+      const reportsRes = await API.get('/admin/reports');
+      if (reportsRes.data.success) {
+        setReports(reportsRes.data.data);
+      }
     } catch (err) {
       console.error('Error fetching admin data:', err);
-      setErrorMsg('Failed to load admin management logs.');
+      toast.error('Failed to load administrative management logs');
     } finally {
       setLoading(false);
     }
@@ -58,34 +83,44 @@ const AdminDashboard = () => {
     fetchAdminData();
   }, []);
 
-  // Handle user delete
   const handleDeleteUser = async (id) => {
     if (!window.confirm('Are you sure you want to delete this user account permanently?')) return;
     try {
       const { data } = await API.delete(`/admin/users/${id}`);
       if (data.success) {
-        setSuccessMsg('User account deleted successfully.');
+        toast.success('User account deleted successfully.');
         setUsers(list => list.filter(u => u._id !== id));
-        // Refresh stats
         fetchAdminData();
       }
     } catch (err) {
-      setErrorMsg(err.response?.data?.message || 'Failed to delete user.');
+      toast.error(err.response?.data?.message || 'Failed to delete user.');
     }
   };
 
-  // Handle job delete
   const handleDeleteJob = async (id) => {
     if (!window.confirm('Are you sure you want to delete this job vacancy listing?')) return;
     try {
       const { data } = await API.delete(`/jobs/${id}`);
       if (data.success) {
-        setSuccessMsg('Job vacancy listing deleted successfully.');
+        toast.success('Job vacancy listing deleted successfully.');
         setJobs(list => list.filter(j => j._id !== id));
         fetchAdminData();
       }
     } catch (err) {
-      setErrorMsg(err.response?.data?.message || 'Failed to delete job.');
+      toast.error(err.response?.data?.message || 'Failed to delete job.');
+    }
+  };
+
+  const handleReportAction = async (id, actionStatus) => {
+    try {
+      const { data } = await API.put(`/admin/reports/${id}`, { status: actionStatus });
+      if (data.success) {
+        toast.success(`Report status updated to ${actionStatus}`);
+        setReports(list => list.map(item => item._id === id ? { ...item, status: actionStatus } : item));
+        fetchAdminData();
+      }
+    } catch (err) {
+      toast.error('Failed to update report status');
     }
   };
 
@@ -110,38 +145,23 @@ const AdminDashboard = () => {
         </button>
       </div>
 
-      {/* Alerts */}
-      {successMsg && (
-        <div className="mb-6 flex items-center gap-2.5 bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl text-sm">
-          <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
-          <span>{successMsg}</span>
-        </div>
-      )}
-      {errorMsg && (
-        <div className="mb-6 flex items-center gap-2.5 bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl text-sm">
-          <AlertTriangle className="h-5 w-5 text-red-650 flex-shrink-0" />
-          <span>{errorMsg}</span>
-        </div>
-      )}
-
       {/* Navigation tabs */}
       <div className="flex border-b border-gray-200 dark:border-gray-800 mb-8 overflow-x-auto gap-4">
         {[
           { key: 'stats', label: 'Platform Stats' },
           { key: 'users', label: 'Manage Users' },
           { key: 'jobs', label: 'Manage Jobs' },
-          { key: 'applications', label: 'Applications Audit' }
+          { key: 'applications', label: 'Applications Audit' },
+          { key: 'reports', label: `Moderation Reports (${stats.reportsCount || 0})` }
         ].map((tab) => (
           <button
             key={tab.key}
             onClick={() => {
               setActiveTab(tab.key);
-              setSuccessMsg('');
-              setErrorMsg('');
             }}
             className={`pb-3 text-sm font-semibold border-b-2 transition whitespace-nowrap ${
               activeTab === tab.key
-                ? 'border-indigo-650 text-indigo-600 border-indigo-600'
+                ? 'border-indigo-600 text-indigo-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -160,7 +180,7 @@ const AdminDashboard = () => {
           {/* Tab 1: Platform Stats */}
           {activeTab === 'stats' && (
             <div className="space-y-8">
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
                 <div className="bg-white border border-gray-100 dark:border-gray-800 dark:bg-gray-900 p-5 rounded-2xl shadow-sm text-center">
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">{stats.seekersCount}</div>
                   <div className="text-xs text-gray-400 font-medium mt-1">Job Seekers</div>
@@ -177,18 +197,51 @@ const AdminDashboard = () => {
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">{stats.companiesCount}</div>
                   <div className="text-xs text-gray-400 font-medium mt-1">Companies</div>
                 </div>
-                <div className="bg-white border border-gray-100 dark:border-gray-800 dark:bg-gray-900 p-5 rounded-2xl shadow-sm text-center col-span-2 md:col-span-1">
+                <div className="bg-white border border-gray-100 dark:border-gray-800 dark:bg-gray-900 p-5 rounded-2xl shadow-sm text-center">
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">{stats.applicationsCount}</div>
                   <div className="text-xs text-gray-400 font-medium mt-1">Applications</div>
                 </div>
+                <div className="bg-white border border-gray-100 dark:border-gray-800 dark:bg-gray-900 p-5 rounded-2xl shadow-sm text-center col-span-2 md:col-span-1">
+                  <div className="text-2xl font-bold text-red-650">{stats.reportsCount}</div>
+                  <div className="text-xs text-gray-400 font-medium mt-1">Pending Reports</div>
+                </div>
               </div>
 
-              {/* Informative info banner for administrators */}
-              <div className="bg-indigo-50/50 border border-indigo-100 rounded-3xl p-6 text-indigo-850">
-                <h3 className="font-bold text-base mb-2">Administrative Role Overview</h3>
-                <p className="text-xs leading-relaxed max-w-3xl">
-                  You are viewing simulated platform totals. As an Admin, you are equipped to delete inappropriate job posts or manage candidate user registrations to maintain security and quality across CareerConnect AI.
-                </p>
+              {/* Analytics Graphs */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white border border-gray-100 dark:border-gray-800 dark:bg-gray-900 p-6 rounded-3xl shadow-sm">
+                  <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-1">
+                    <PieChart className="h-4.5 w-4.5 text-indigo-650" /> User Distribution
+                  </h3>
+                  <div className="h-60 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={userDistributionData}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis dataKey="role" tick={{ fontSize: 11 }} />
+                        <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                        <Tooltip />
+                        <Bar dataKey="count" fill="#4f46e5" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="bg-white border border-gray-100 dark:border-gray-800 dark:bg-gray-900 p-6 rounded-3xl shadow-sm">
+                  <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-1">
+                    <BarChart3 className="h-4.5 w-4.5 text-indigo-650" /> Platform Totals
+                  </h3>
+                  <div className="h-60 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={platformTotalsData}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                        <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                        <Tooltip />
+                        <Bar dataKey="total" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -210,7 +263,7 @@ const AdminDashboard = () => {
                   </thead>
                   <tbody>
                     {users.map((u) => (
-                      <tr key={u._id} className="border-b border-gray-50 dark:border-gray-850 hover:bg-gray-50/50 transition-colors">
+                      <tr key={u._id} className="border-b border-gray-50 dark:border-gray-850 hover:bg-gray-55/30 transition-colors">
                         <td className="py-4 font-bold text-gray-900 dark:text-white flex items-center gap-2">
                           <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-150 text-gray-600 font-bold text-xs uppercase">
                             {u.name[0]}
@@ -265,7 +318,7 @@ const AdminDashboard = () => {
                   </thead>
                   <tbody>
                     {jobs.map((j) => (
-                      <tr key={j._id} className="border-b border-gray-55 hover:bg-gray-50/50 transition-colors">
+                      <tr key={j._id} className="border-b border-gray-55 hover:bg-gray-55/30 transition-colors">
                         <td className="py-4 font-bold text-gray-900 dark:text-white">
                           <Link to={`/jobs/${j._id}`} className="hover:underline">{j.title}</Link>
                         </td>
@@ -306,10 +359,10 @@ const AdminDashboard = () => {
                   </thead>
                   <tbody>
                     {applications.map((app) => (
-                      <tr key={app._id} className="border-b border-gray-55 hover:bg-gray-50/50 transition-colors">
+                      <tr key={app._id} className="border-b border-gray-55 hover:bg-gray-55/30 transition-colors">
                         <td className="py-4 font-bold text-gray-900 dark:text-white">{app.applicant?.name || 'Deleted Seeker'}</td>
                         <td className="py-4 text-gray-500 font-semibold">{app.job?.title || 'Job Deleted'}</td>
-                        <td className="py-4 text-gray-450">{app.job?.company?.name || 'Company Details'}</td>
+                        <td className="py-4 text-gray-455">{app.job?.company?.name || 'Company Details'}</td>
                         <td className="py-4">
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                             app.status === 'Selected' 
@@ -331,6 +384,81 @@ const AdminDashboard = () => {
                   </tbody>
                 </table>
               </div>
+            </div>
+          )}
+
+          {/* Tab 5: Moderation Reports */}
+          {activeTab === 'reports' && (
+            <div className="bg-white border border-gray-100 dark:border-gray-800 dark:bg-gray-900 rounded-3xl p-6 shadow-sm">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Moderation Ledger</h2>
+              {reports.length === 0 ? (
+                <div className="text-center py-12 text-gray-400 text-xs font-semibold">
+                  <ShieldAlert className="h-10 w-10 text-gray-300 mx-auto mb-2" />
+                  No reports submitted yet
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-100 dark:border-gray-800 text-gray-400 font-semibold">
+                        <th className="pb-3">Reporter</th>
+                        <th className="pb-3">Target</th>
+                        <th className="pb-3">Reason</th>
+                        <th className="pb-3">Status</th>
+                        <th className="pb-3 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {reports.map((rep) => (
+                        <tr key={rep._id} className="border-b border-gray-55 hover:bg-gray-55/30 transition-colors">
+                          <td className="py-4 font-semibold text-gray-900 dark:text-white">
+                            {rep.reporter?.name || 'Deleted Account'}
+                            <div className="text-[10px] text-gray-450 font-normal">{rep.reporter?.email}</div>
+                          </td>
+                          <td className="py-4">
+                            <span className="font-bold text-indigo-700">{rep.targetType}</span>
+                            <div className="text-xs font-semibold text-gray-600 dark:text-gray-400">
+                              {rep.targetDetails ? (rep.targetDetails.title || rep.targetDetails.name) : 'Record Deleted'}
+                            </div>
+                          </td>
+                          <td className="py-4 text-gray-550 max-w-xs truncate" title={rep.reason}>
+                            {rep.reason}
+                          </td>
+                          <td className="py-4">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                              rep.status === 'Resolved' 
+                                ? 'bg-green-50 text-green-700 border border-green-150' 
+                                : rep.status === 'Dismissed'
+                                  ? 'bg-gray-55 text-gray-600'
+                                  : 'bg-red-50 text-red-750 border border-red-100'
+                            }`}>
+                              {rep.status}
+                            </span>
+                          </td>
+                          <td className="py-4 text-right space-x-2">
+                            {rep.status === 'Pending' && (
+                              <>
+                                <button
+                                  onClick={() => handleReportAction(rep._id, 'Resolved')}
+                                  className="px-2 py-1 bg-green-600 hover:bg-green-500 text-white rounded text-[10px] font-bold transition"
+                                >
+                                  Resolve
+                                </button>
+                                <button
+                                  onClick={() => handleReportAction(rep._id, 'Dismissed')}
+                                  className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-[10px] font-bold transition"
+                                >
+                                  Dismiss
+                                </button>
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           )}
         </>
