@@ -72,35 +72,29 @@ const getJobs = async (req, res, next) => {
   try {
     const { search, location, jobType, minSalary, experience } = req.query;
     
-    // Build query filters dynamically
+    // Build query filters using soft OR matching so partial matches are displayed
     let queryFilters = {};
+    let orConditions = [];
 
-    // Search by title or skills
     if (search) {
-      queryFilters.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { skills: { $regex: search, $options: 'i' } }
-      ];
+      orConditions.push({ title: { $regex: search, $options: 'i' } });
+      orConditions.push({ skills: { $regex: search, $options: 'i' } });
     }
-
-    // Filter by location (case-insensitive)
     if (location) {
-      queryFilters.location = { $regex: location, $options: 'i' };
+      orConditions.push({ location: { $regex: location, $options: 'i' } });
     }
-
-    // Filter by job type (exact match)
     if (jobType) {
-      queryFilters.jobType = jobType;
+      orConditions.push({ jobType: { $regex: jobType, $options: 'i' } });
     }
-
-    // Filter by experience level (case-insensitive search, e.g. "0-2 years")
     if (experience) {
-      queryFilters.experience = { $regex: experience, $options: 'i' };
+      orConditions.push({ experience: { $regex: experience, $options: 'i' } });
+    }
+    if (minSalary) {
+      orConditions.push({ salary: { $gte: Number(minSalary) } });
     }
 
-    // Filter by minimum salary
-    if (minSalary) {
-      queryFilters.salary = { $gte: Number(minSalary) };
+    if (orConditions.length > 0) {
+      queryFilters.$or = orConditions;
     }
 
     // Find and populate company details

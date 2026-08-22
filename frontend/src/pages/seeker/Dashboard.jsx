@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import API from '../../services/api';
-import { FileText, CheckCircle, Clock, AlertTriangle, XCircle, FileUp, Download, Eye, Briefcase } from 'lucide-react';
+import { FileText, CheckCircle, Clock, AlertTriangle, XCircle, FileUp, Download, Eye, Briefcase, Award } from 'lucide-react';
 
 const SeekerDashboard = () => {
   const { user, updateProfileState } = useAuth();

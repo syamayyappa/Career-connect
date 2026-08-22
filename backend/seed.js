@@ -81,12 +81,11 @@ const runSeeding = async () => {
       { name: 'Atlassian', description: 'Tools like Jira and Confluence built for teamwork.', website: 'https://atlassian.com', location: 'Sydney, Australia', industry: 'Software Collaboration', employees: 10000, foundedYear: 2002, recruiterIndex: 2 },
       { name: 'Netflix', description: 'Subscription-based streaming service provider.', website: 'https://netflix.com', location: 'Los Gatos, CA', industry: 'Entertainment / Streaming', employees: 12000, foundedYear: 1997, recruiterIndex: 3 },
       { name: 'Shopify', description: 'E-commerce platform for retail stores and merchants.', website: 'https://shopify.com', location: 'Ottawa, Canada', industry: 'E-Commerce', employees: 9000, foundedYear: 2006, recruiterIndex: 4 },
-      // Extra seed companies
       { name: 'Slack', description: 'Instant messaging app and workspace collaboration platform.', website: 'https://slack.com', location: 'San Francisco, CA', industry: 'Workspace Chat', employees: 3000, foundedYear: 2009, recruiterIndex: 2 },
       { name: 'Vercel', description: 'Frontend deployment and serverless cloud solutions.', website: 'https://vercel.com', location: 'Remote', industry: 'Cloud Frontend', employees: 500, foundedYear: 2015, recruiterIndex: 0 },
-      { name: 'Canva', description: 'Graphic design platform for publishing content.', website: 'https://canva.com', location: 'Sydney, Australia', industry: 'Graphic Design', employees: 4000, foundedYear: 2013, recruiterIndex: 4 },
+      { name: 'Infosys Hyderabad', description: 'Global consulting and IT services corporation.', website: 'https://infosys.com', location: 'Hyderabad, India', industry: 'IT Services', employees: 300000, foundedYear: 1981, recruiterIndex: 1 },
       { name: 'Zoom', description: 'Video communication suite and virtual meetings.', website: 'https://zoom.us', location: 'San Jose, CA', industry: 'Telecommunications', employees: 6000, foundedYear: 2011, recruiterIndex: 1 },
-      { name: 'Reddit', description: 'Network of communities and social content sharing.', website: 'https://reddit.com', location: 'San Francisco, CA', industry: 'Social Media', employees: 2000, foundedYear: 2005, recruiterIndex: 3 }
+      { name: 'Tech Mahindra Hyderabad', description: 'Digital transformation, consulting and business re-engineering services.', website: 'https://techmahindra.com', location: 'Hyderabad, India', industry: 'IT Consulting', employees: 120000, foundedYear: 1986, recruiterIndex: 3 }
     ];
 
     const companies = [];
@@ -171,21 +170,21 @@ const runSeeding = async () => {
       
       { title: 'Node.js API Lead', companyName: 'Slack', jobType: 'Full-time', experience: 'Senior', salary: 165000, skills: ['Node.js', 'Express', 'Redis', 'SQL', 'Docker'], recruiterIndex: 2 },
       { title: 'Frontend Deployment Engineer', companyName: 'Vercel', jobType: 'Remote', experience: 'Mid-level', salary: 140000, skills: ['Next.js', 'React', 'TypeScript', 'HTML', 'CSS'], recruiterIndex: 0 },
-      { title: 'Senior Software Engineer', companyName: 'Canva', jobType: 'Hybrid', experience: 'Senior', salary: 170000, skills: ['Java', 'React', 'AWS', 'MySQL', 'Git'], recruiterIndex: 4 },
+      { title: 'Senior Software Engineer', companyName: 'Infosys Hyderabad', jobType: 'Full-time', experience: 'Senior', salary: 170000, skills: ['Java', 'React', 'AWS', 'MySQL', 'Git'], recruiterIndex: 1 },
       { title: 'Video Infrastructure dev', companyName: 'Zoom', jobType: 'Full-time', experience: 'Mid-level', salary: 135000, skills: ['Go', 'C++', 'Docker', 'REST API', 'Redis'], recruiterIndex: 1 },
-      { title: 'Senior Node Platform dev', companyName: 'Reddit', jobType: 'Remote', experience: 'Senior', salary: 160000, skills: ['Node.js', 'Express', 'MongoDB', 'Kafka', 'Docker'], recruiterIndex: 3 },
-
+      { title: 'Senior Node Platform dev', companyName: 'Tech Mahindra Hyderabad', jobType: 'Remote', experience: 'Senior', salary: 160000, skills: ['Node.js', 'Express', 'MongoDB', 'Kafka', 'Docker'], recruiterIndex: 3 },
+ 
       { title: 'Junior Frontend Developer', companyName: 'Stripe', jobType: 'Internship', experience: 'Entry-level', salary: 65000, skills: ['JavaScript', 'React', 'HTML', 'CSS', 'Git'], recruiterIndex: 0 },
       { title: 'Systems Engineer', companyName: 'Google', jobType: 'Full-time', experience: 'Mid-level', salary: 150000, skills: ['Go', 'Docker', 'Kubernetes', 'Linux', 'SQL'], recruiterIndex: 1 },
       { title: 'Technical Support Developer', companyName: 'Atlassian', jobType: 'Part-time', experience: 'Entry-level', salary: 50000, skills: ['JavaScript', 'HTML', 'CSS', 'SQL', 'Git'], recruiterIndex: 2 },
-      { title: 'Software Engineer - API Team', companyName: 'Netflix', jobType: 'Full-time', experience: 'Mid-level', salary: 145000, skills: ['Python', 'FastAPI', 'MongoDB', 'Docker', 'REST API'], recruiterIndex: 3 },
+      { title: 'Software Engineer - API Team', companyName: 'Tech Mahindra Hyderabad', jobType: 'Full-time', experience: 'Mid-level', salary: 145000, skills: ['Python', 'FastAPI', 'MongoDB', 'Docker', 'REST API'], recruiterIndex: 3 },
       { title: 'Ruby on Rails Developer', companyName: 'Shopify', jobType: 'Full-time', experience: 'Entry-level', salary: 90000, skills: ['Ruby', 'Rails', 'SQL', 'HTML', 'CSS'], recruiterIndex: 4 },
-
+ 
       { title: 'Product UI Engineer', companyName: 'Slack', jobType: 'Hybrid', experience: 'Entry-level', salary: 95000, skills: ['React', 'JavaScript', 'CSS', 'Git', 'Bootstrap'], recruiterIndex: 2 },
       { title: 'Next.js Frontend intern', companyName: 'Vercel', jobType: 'Internship', experience: 'Entry-level', salary: 45000, skills: ['React', 'Next.js', 'CSS', 'Git'], recruiterIndex: 0 },
-      { title: 'DevOps Cloud Specialist', companyName: 'Canva', jobType: 'Full-time', experience: 'Senior', salary: 175000, skills: ['AWS', 'Terraform', 'Docker', 'CI/CD', 'Jenkins'], recruiterIndex: 4 },
+      { title: 'DevOps Cloud Specialist', companyName: 'Infosys Hyderabad', jobType: 'Full-time', experience: 'Senior', salary: 175000, skills: ['AWS', 'Terraform', 'Docker', 'CI/CD', 'Jenkins'], recruiterIndex: 1 },
       { title: 'Security Developer', companyName: 'Zoom', jobType: 'Full-time', experience: 'Senior', salary: 180000, skills: ['Go', 'Python', 'C++', 'Cryptography', 'Linux'], recruiterIndex: 1 },
-      { title: 'Community Tools dev', companyName: 'Reddit', jobType: 'Part-time', experience: 'Entry-level', salary: 55000, skills: ['Python', 'Django', 'SQL', 'Git'], recruiterIndex: 3 },
+      { title: 'Community Tools dev', companyName: 'Tech Mahindra Hyderabad', jobType: 'Part-time', experience: 'Entry-level', salary: 55000, skills: ['Python', 'Django', 'SQL', 'Git'], recruiterIndex: 3 },
       { title: 'Solutions Architect', companyName: 'Stripe', jobType: 'Full-time', experience: 'Senior', salary: 170000, skills: ['Node.js', 'React', 'AWS', 'SQL', 'REST API'], recruiterIndex: 0 }
     ];
 
