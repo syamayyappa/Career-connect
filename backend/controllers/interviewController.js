@@ -144,8 +144,50 @@ const updateInterviewStatus = async (req, res, next) => {
   }
 };
 
+// @desc    Delete/Cancel an interview
+// @route   DELETE /api/interviews/:id
+// @access  Private (Recruiter/Admin only)
+const deleteInterview = async (req, res, next) => {
+  try {
+    const interview = await Interview.findById(req.params.id)
+      .populate('job', 'title');
+
+    if (!interview) {
+      res.status(404);
+      return next(new Error('Interview record not found'));
+    }
+
+    if (interview.recruiter.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+      res.status(403);
+      return next(new Error('You are not authorized to delete this interview'));
+    }
+
+    // Notify candidate
+    try {
+      await Notification.create({
+        user: interview.candidate,
+        title: 'Interview Cancelled',
+        message: `Your scheduled interview for '${interview.job?.title || 'Job'}' has been cancelled.`,
+        type: 'warning'
+      });
+    } catch (nErr) {
+      console.warn('Cancel notification note:', nErr.message);
+    }
+
+    await interview.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      message: 'Interview deleted successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   scheduleInterview,
   getMyInterviews,
-  updateInterviewStatus
+  updateInterviewStatus,
+  deleteInterview
 };

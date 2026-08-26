@@ -127,9 +127,18 @@ const uploadResume = async (req, res, next) => {
     if (req.file.mimetype === 'application/pdf') {
       try {
         const dataBuffer = fs.readFileSync(req.file.path);
-        const parsedPdf = await pdfParse(dataBuffer);
+        let extractedText = '';
+        const pdfModule = require('pdf-parse');
+        if (typeof pdfModule === 'function') {
+          const parsedPdf = await pdfModule(dataBuffer);
+          extractedText = parsedPdf.text || '';
+        } else if (pdfModule.PDFParse) {
+          const parser = new pdfModule.PDFParse({ data: dataBuffer });
+          const result = await parser.getText();
+          extractedText = result.text || '';
+        }
         
-        extractedSkills = extractSkillsFromText(parsedPdf.text);
+        extractedSkills = extractSkillsFromText(extractedText);
         
         // Merge unique skills into user profile
         if (extractedSkills.length > 0) {

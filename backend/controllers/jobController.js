@@ -70,31 +70,35 @@ const createJob = async (req, res, next) => {
 // @access  Public
 const getJobs = async (req, res, next) => {
   try {
-    const { search, location, jobType, minSalary, experience } = req.query;
+    const { search, location, jobType, minSalary, experience, status } = req.query;
     
-    // Build query filters using soft OR matching so partial matches are displayed
     let queryFilters = {};
-    let orConditions = [];
 
-    if (search) {
-      orConditions.push({ title: { $regex: search, $options: 'i' } });
-      orConditions.push({ skills: { $regex: search, $options: 'i' } });
+    // Status filter (defaults to showing Active jobs for public search)
+    if (status) {
+      queryFilters.status = status;
     }
+
+    // Search across title, skills, and description
+    if (search) {
+      queryFilters.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { skills: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
+    }
+
     if (location) {
-      orConditions.push({ location: { $regex: location, $options: 'i' } });
+      queryFilters.location = { $regex: location, $options: 'i' };
     }
     if (jobType) {
-      orConditions.push({ jobType: { $regex: jobType, $options: 'i' } });
+      queryFilters.jobType = { $regex: jobType, $options: 'i' };
     }
     if (experience) {
-      orConditions.push({ experience: { $regex: experience, $options: 'i' } });
+      queryFilters.experience = { $regex: experience, $options: 'i' };
     }
     if (minSalary) {
-      orConditions.push({ salary: { $gte: Number(minSalary) } });
-    }
-
-    if (orConditions.length > 0) {
-      queryFilters.$or = orConditions;
+      queryFilters.salary = { $gte: Number(minSalary) };
     }
 
     // Find and populate company details

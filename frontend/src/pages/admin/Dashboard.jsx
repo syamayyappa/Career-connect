@@ -100,7 +100,7 @@ const AdminDashboard = () => {
   const handleDeleteJob = async (id) => {
     if (!window.confirm('Are you sure you want to delete this job vacancy listing?')) return;
     try {
-      const { data } = await API.delete(`/jobs/${id}`);
+      const { data } = await API.delete(`/admin/jobs/${id}`);
       if (data.success) {
         toast.success('Job vacancy listing deleted successfully.');
         setJobs(list => list.filter(j => j._id !== id));

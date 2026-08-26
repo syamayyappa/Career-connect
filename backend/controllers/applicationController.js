@@ -153,6 +153,25 @@ const updateApplicationStatus = async (req, res, next) => {
     application.status = status;
     await application.save();
 
+    // Automatically trigger notification for candidate
+    try {
+      const Notification = require('../models/Notification');
+      const job = await Job.findById(application.job);
+      let notifType = 'info';
+      if (status === 'Shortlisted' || status === 'Selected') notifType = 'success';
+      else if (status === 'Rejected') notifType = 'error';
+      else if (status === 'Under Review') notifType = 'warning';
+
+      await Notification.create({
+        user: application.applicant,
+        title: `Application ${status}`,
+        message: `Your application for '${job?.title || 'Job'}' has been updated to '${status}'.`,
+        type: notifType
+      });
+    } catch (notifErr) {
+      console.warn('Candidate notification note:', notifErr.message);
+    }
+
     res.status(200).json({
       success: true,
       message: `Application status updated to '${status}' successfully`,
@@ -197,10 +216,39 @@ const getRecruiterStats = async (req, res, next) => {
   }
 };
 
+// @desc    Get all applications for the recruiter's jobs
+// @route   GET /api/applications/recruiter
+// @access  Private (Recruiter only)
+const getRecruiterApplications = async (req, res, next) => {
+  try {
+    const applications = await Application.find({ recruiter: req.user._id })
+      .populate({
+        path: 'job',
+        select: 'title location jobType salary skills experience deadline',
+        populate: {
+          path: 'company',
+          select: 'name logo'
+        }
+      })
+      .populate('applicant', 'name email phone skills education experience location profileImage resume')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: applications.length,
+      message: 'Recruiter applications retrieved successfully',
+      data: applications
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   applyForJob,
   getMyApplications,
   getJobApplications,
+  getRecruiterApplications,
   updateApplicationStatus,
   getRecruiterStats
 };

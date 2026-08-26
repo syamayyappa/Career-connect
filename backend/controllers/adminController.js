@@ -102,6 +102,49 @@ const getAllApplications = async (req, res, next) => {
   }
 };
 
+// @desc    Get all jobs for admin moderation
+// @route   GET /api/admin/jobs
+// @access  Private (Admin only)
+const getAllJobs = async (req, res, next) => {
+  try {
+    const jobs = await Job.find()
+      .populate('company', 'name location')
+      .populate('recruiter', 'name email')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: jobs.length,
+      message: 'All jobs retrieved successfully for admin',
+      data: jobs
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete any job posting (Admin moderation)
+// @route   DELETE /api/admin/jobs/:id
+// @access  Private (Admin only)
+const deleteJob = async (req, res, next) => {
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) {
+      res.status(404);
+      return next(new Error('Job posting not found'));
+    }
+
+    await job.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      message: 'Job posting deleted successfully by admin'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // --- Moderation Reports (Expanded Features) ---
 
 // @desc    Create a moderation report
@@ -216,6 +259,8 @@ module.exports = {
   getAdminStats,
   getAllUsers,
   deleteUser,
+  getAllJobs,
+  deleteJob,
   getAllApplications,
   createReport,
   getAllReports,

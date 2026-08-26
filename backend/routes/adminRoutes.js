@@ -3,6 +3,8 @@ const {
   getAdminStats,
   getAllUsers,
   deleteUser,
+  getAllJobs,
+  deleteJob,
   getAllApplications,
   createReport,
   getAllReports,
@@ -19,6 +21,8 @@ router.post('/reports', protect, createReport);
 router.get('/stats', protect, authorize('admin'), getAdminStats);
 router.get('/users', protect, authorize('admin'), getAllUsers);
 router.delete('/users/:id', protect, authorize('admin'), deleteUser);
+router.get('/jobs', protect, authorize('admin'), getAllJobs);
+router.delete('/jobs/:id', protect, authorize('admin'), deleteJob);
 router.get('/applications', protect, authorize('admin'), getAllApplications);
 router.get('/reports', protect, authorize('admin'), getAllReports);
 router.put('/reports/:id', protect, authorize('admin'), resolveReport);

@@ -72,7 +72,30 @@ const getMySavedJobs = async (req, res, next) => {
   }
 };
 
+// @desc    Delete a bookmarked job
+// @route   DELETE /api/saved-jobs/:jobId
+// @access  Private (Seeker only)
+const removeSavedJob = async (req, res, next) => {
+  try {
+    const saved = await SavedJob.findOne({ user: req.user._id, job: req.params.jobId });
+    if (!saved) {
+      res.status(404);
+      return next(new Error('Saved job record not found'));
+    }
+
+    await saved.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      message: 'Job removed from saved bookmarks'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   toggleSavedJob,
-  getMySavedJobs
+  getMySavedJobs,
+  removeSavedJob
 };

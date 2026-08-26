@@ -2,7 +2,8 @@ const express = require('express');
 const {
   scheduleInterview,
   getMyInterviews,
-  updateInterviewStatus
+  updateInterviewStatus,
+  deleteInterview
 } = require('../controllers/interviewController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
@@ -15,6 +16,7 @@ router.route('/')
   .post(authorize('recruiter'), scheduleInterview);
 
 router.route('/:id')
-  .put(authorize('recruiter'), updateInterviewStatus);
+  .put(authorize('recruiter'), updateInterviewStatus)
+  .delete(authorize('recruiter', 'admin'), deleteInterview);
 
 module.exports = router;

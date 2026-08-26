@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
         return { success: true };
       }
     } catch (err) {
-      const msg = err.response?.data?.message || 'Registration failed';
+      const msg = err.response?.data?.message || (err.code === 'ERR_NETWORK' || !err.response ? 'Cannot connect to backend server. Make sure backend is running.' : 'Registration failed');
       setError(msg);
       setLoading(false);
       return { success: false, message: msg };
@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }) => {
         return { success: true };
       }
     } catch (err) {
-      const msg = err.response?.data?.message || 'Invalid email or password';
+      const msg = err.response?.data?.message || (err.code === 'ERR_NETWORK' || !err.response ? 'Cannot connect to backend server. Make sure backend is running.' : 'Invalid email or password');
       setError(msg);
       setLoading(false);
       return { success: false, message: msg };
