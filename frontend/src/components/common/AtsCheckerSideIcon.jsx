@@ -115,19 +115,19 @@ const AtsCheckerSideIcon = () => {
       <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40 flex items-center">
         <button
           onClick={() => setIsOpen(true)}
-          className="group relative flex items-center gap-2.5 bg-gradient-to-r from-slate-900 via-slate-950 to-blue-950 text-white py-3 px-3.5 rounded-l-2xl shadow-2xl shadow-slate-950/50 hover:pl-5 hover:pr-4 transition-all duration-300 transform hover:-translate-x-1 cursor-pointer border-t border-b border-l border-slate-700/60"
+          className="group relative flex items-center gap-2.5 bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-950 text-white py-3 px-3.5 rounded-l-2xl shadow-2xl shadow-indigo-950/50 hover:pl-5 hover:pr-4 transition-all duration-300 transform hover:-translate-x-1 cursor-pointer border-t border-b border-l border-indigo-500/40"
           title="Open AI ATS Resume Checker"
           aria-label="Open ATS Checker"
         >
           {/* Glowing pulse aura */}
           <span className="absolute -left-1 -top-1 flex h-3.5 w-3.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border border-white"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-cyan-500 border border-white"></span>
           </span>
 
           {/* Scanner Icon */}
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm shadow-inner group-hover:scale-110 transition-transform">
-            <ScanLine className="h-4.5 w-4.5 text-blue-400 animate-pulse" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/20 backdrop-blur-sm border border-indigo-400/30 shadow-inner group-hover:scale-110 transition-transform">
+            <ScanLine className="h-4.5 w-4.5 text-indigo-300 animate-pulse" />
           </div>
 
           {/* Text with Badge */}
@@ -136,7 +136,7 @@ const AtsCheckerSideIcon = () => {
               <span className="font-extrabold text-sm tracking-tight text-white whitespace-nowrap">
                 ATS Checker
               </span>
-              <span className="bg-amber-400 text-slate-950 font-black text-[9px] px-1.5 py-0.2 rounded-full uppercase tracking-wider">
+              <span className="bg-gradient-to-r from-amber-400 to-orange-400 text-slate-950 font-black text-[9px] px-1.5 py-0.2 rounded-full uppercase tracking-wider shadow-xs">
                 AI
               </span>
             </div>

@@ -11,6 +11,9 @@ const router = express.Router();
 
 router.use(protect);
 
+router.route('/my')
+  .get(getMyInterviews);
+
 router.route('/')
   .get(getMyInterviews)
   .post(authorize('recruiter'), scheduleInterview);
