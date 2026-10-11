@@ -1,26 +1,49 @@
+const fs = require('fs');
+const path = require('path');
 const Application = require('../models/Application');
 const Job = require('../models/Job');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 
 // @desc    Apply for a job
 // @route   POST /api/applications
 // @access  Private (Seeker only)
 const applyForJob = async (req, res, next) => {
-  const { jobId, coverLetter } = req.body;
+  const {
+    jobId,
+    coverLetter,
+    fullName,
+    email,
+    phone,
+    location,
+    experienceLevel,
+    yearsOfExperience,
+    currentlyWorking,
+    currentCompany,
+    currentRole,
+    noticePeriod,
+    expectedSalary,
+    skills,
+    highestEducation,
+    college,
+    graduationYear,
+    linkedinUrl,
+    portfolioUrl
+  } = req.body;
 
   try {
     // 1. Verify Job exists
-    const job = await Job.findById(jobId);
+    const job = await Job.findById(jobId).populate('company', 'name logo');
     if (!job) {
       res.status(404);
       return next(new Error('Job not found'));
     }
 
-    // 2. Fetch User Profile to get their default resume
+    // 2. Fetch User Profile
     const user = await User.findById(req.user._id);
-    if (!user || !user.resume) {
-      res.status(400);
-      return next(new Error('Please upload a resume to your profile before applying for jobs'));
+    if (!user) {
+      res.status(404);
+      return next(new Error('User not found'));
     }
 
     // 3. Check if applicant has already applied (Duplicate prevention)
@@ -34,23 +57,124 @@ const applyForJob = async (req, res, next) => {
       return next(new Error('You have already applied for this job'));
     }
 
-    // 4. Create application
+    // 4. Handle Resume File (Uploaded now or existing in profile)
+    let resumePath = user.resume || '';
+
+    if (req.file) {
+      resumePath = `/uploads/${req.file.filename}`;
+      user.resume = resumePath;
+
+      // Extract skills if PDF
+      if (req.file.mimetype === 'application/pdf') {
+        try {
+          const dataBuffer = fs.readFileSync(req.file.path);
+          let extractedText = '';
+          const pdfModule = require('pdf-parse');
+          if (typeof pdfModule === 'function') {
+            const parsedPdf = await pdfModule(dataBuffer);
+            extractedText = parsedPdf.text || '';
+          } else if (pdfModule.PDFParse) {
+            const parser = new pdfModule.PDFParse({ data: dataBuffer });
+            const result = await parser.getText();
+            extractedText = result.text || '';
+          }
+
+          const { extractSkillsFromText } = require('./userController');
+          if (typeof extractSkillsFromText === 'function') {
+            const extracted = extractSkillsFromText(extractedText);
+            if (extracted && extracted.length > 0) {
+              user.skills = Array.from(new Set([...(user.skills || []), ...extracted]));
+            }
+          }
+        } catch (pdfErr) {
+          console.warn('Application resume parsing note:', pdfErr.message);
+        }
+      }
+    } else if (req.body.resume) {
+      resumePath = req.body.resume;
+    }
+
+    // 5. Parse Skills
+    let parsedSkills = [];
+    if (Array.isArray(skills)) {
+      parsedSkills = skills;
+    } else if (typeof skills === 'string' && skills.trim()) {
+      try {
+        parsedSkills = JSON.parse(skills);
+      } catch (e) {
+        parsedSkills = skills.split(',').map(s => s.trim()).filter(Boolean);
+      }
+    } else if (user.skills && user.skills.length > 0) {
+      parsedSkills = user.skills;
+    }
+
+    // Update user profile with latest phone / location / skills if not set
+    if (phone && !user.phone) user.phone = phone;
+    if (location && !user.location) user.location = location;
+    if (parsedSkills.length > 0) {
+      user.skills = Array.from(new Set([...(user.skills || []), ...parsedSkills]));
+    }
+    await user.save();
+
+    const isCurrentlyWorking = currentlyWorking === 'true' || currentlyWorking === true;
+
+    // 6. Create application
     const application = await Application.create({
       job: jobId,
       applicant: req.user._id,
       recruiter: job.recruiter,
-      resume: user.resume, // Save a copy of current resume URL
-      coverLetter,
+      resume: resumePath,
+      coverLetter: coverLetter || '',
+      fullName: fullName || user.name,
+      email: email || user.email,
+      phone: phone || user.phone || '',
+      location: location || user.location || '',
+      experienceLevel: experienceLevel || 'Fresher',
+      yearsOfExperience: yearsOfExperience || '0',
+      currentlyWorking: isCurrentlyWorking,
+      currentCompany: isCurrentlyWorking ? (currentCompany || '') : '',
+      currentRole: isCurrentlyWorking ? (currentRole || '') : '',
+      noticePeriod: noticePeriod || 'Immediate',
+      expectedSalary: expectedSalary || '',
+      skills: parsedSkills,
+      highestEducation: highestEducation || '',
+      college: college || '',
+      graduationYear: graduationYear || '',
+      linkedinUrl: linkedinUrl || '',
+      portfolioUrl: portfolioUrl || '',
       status: 'Applied'
     });
 
+    // 7. Notification for Job Seeker
+    try {
+      await Notification.create({
+        user: req.user._id,
+        title: 'Application Submitted Successfully',
+        message: `You applied for ${job.title} at ${job.company?.name || 'Company'}. Recruiter will review your profile.`,
+        type: 'success'
+      });
+    } catch (nErr) {
+      console.warn('Applicant notification note:', nErr.message);
+    }
+
+    // 8. Notification for Recruiter
+    try {
+      await Notification.create({
+        user: job.recruiter,
+        title: 'New Candidate Applied',
+        message: `${user.name} applied for ${job.title} (${experienceLevel || 'Fresher'}).`,
+        type: 'info'
+      });
+    } catch (rErr) {
+      console.warn('Recruiter notification note:', rErr.message);
+    }
+
     res.status(201).json({
       success: true,
-      message: 'Application submitted successfully',
+      message: 'Application submitted successfully! Recruiter has been notified.',
       data: application
     });
   } catch (error) {
-    // Catch Mongoose duplicate key error index if hit concurrently
     if (error.code === 11000) {
       res.status(400);
       return next(new Error('You have already applied for this job'));

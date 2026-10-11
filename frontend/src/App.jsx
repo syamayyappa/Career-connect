@@ -9,6 +9,7 @@ import { Toaster } from 'react-hot-toast';
 import Home from './pages/Home';
 import Jobs from './pages/Jobs';
 import JobDetails from './pages/JobDetails';
+import ApplyJob from './pages/ApplyJob';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import About from './pages/About';
@@ -51,6 +52,14 @@ function App() {
             <Route path="/contact" element={<Contact />} />
 
             {/* Seeker Guards */}
+            <Route
+              path="/jobs/:id/apply"
+              element={
+                <ProtectedRoute allowedRoles={['seeker']}>
+                  <ApplyJob />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/seeker/dashboard"
               element={

@@ -112,41 +112,31 @@ const AtsCheckerSideIcon = () => {
       {/* ========================================================================= */}
       {/* FLOATING SIDE DOCK ICON (Anchored on Right Screen Edge)                   */}
       {/* ========================================================================= */}
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40 flex items-center">
+      {/* ========================================================================= */}
+      {/* FLOATING CIRCULAR BUTTON (Kept aside in a circle until clicked)           */}
+      {/* ========================================================================= */}
+      <div className="fixed bottom-6 right-6 z-40">
         <button
           onClick={() => setIsOpen(true)}
-          className="group relative flex items-center gap-2.5 bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-950 text-white py-3 px-3.5 rounded-l-2xl shadow-2xl shadow-indigo-950/50 hover:pl-5 hover:pr-4 transition-all duration-300 transform hover:-translate-x-1 cursor-pointer border-t border-b border-l border-indigo-500/40"
+          className="group relative flex items-center justify-center h-14 w-14 rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-700 to-violet-700 text-white shadow-2xl shadow-indigo-600/40 hover:scale-110 active:scale-95 transition-all duration-300 border-2 border-white/40 cursor-pointer"
           title="Open AI ATS Resume Checker"
           aria-label="Open ATS Checker"
         >
-          {/* Glowing pulse aura */}
-          <span className="absolute -left-1 -top-1 flex h-3.5 w-3.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-cyan-500 border border-white"></span>
-          </span>
+          {/* Subtle pulse ring */}
+          <span className="absolute -inset-1 rounded-full bg-indigo-500/30 animate-ping pointer-events-none" />
 
           {/* Scanner Icon */}
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/20 backdrop-blur-sm border border-indigo-400/30 shadow-inner group-hover:scale-110 transition-transform">
-            <ScanLine className="h-4.5 w-4.5 text-indigo-300 animate-pulse" />
-          </div>
+          <ScanLine className="h-6 w-6 text-white group-hover:rotate-12 transition-transform duration-300" />
 
-          {/* Text with Badge */}
-          <div className="flex flex-col items-start pr-1">
-            <div className="flex items-center gap-1.5 leading-none">
-              <span className="font-extrabold text-sm tracking-tight text-white whitespace-nowrap">
-                ATS Checker
-              </span>
-              <span className="bg-gradient-to-r from-amber-400 to-orange-400 text-slate-950 font-black text-[9px] px-1.5 py-0.2 rounded-full uppercase tracking-wider shadow-xs">
-                AI
-              </span>
-            </div>
-            <span className="text-[10px] text-slate-400 font-medium whitespace-nowrap mt-0.5">
-              Instant Scan & Match
-            </span>
-          </div>
+          {/* Small Badge */}
+          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-amber-400 to-orange-400 text-[9px] font-black text-slate-950 shadow-sm border border-white">
+            AI
+          </span>
 
-          {/* Hover Arrow Indicator */}
-          <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-white group-hover:translate-x-0.5 transition" />
+          {/* Hover Tooltip */}
+          <span className="absolute right-16 px-3 py-1.5 rounded-xl bg-slate-900/90 text-white text-xs font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg border border-slate-750 backdrop-blur-xs">
+            Open ATS Scanner
+          </span>
         </button>
       </div>
 
@@ -162,7 +152,7 @@ const AtsCheckerSideIcon = () => {
           />
 
           <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-            <div className="w-screen max-w-md bg-white dark:bg-gray-900 border-l border-gray-100 dark:border-gray-800 shadow-2xl flex flex-col h-full animate-in slide-in-from-right duration-300">
+            <div className="w-screen max-w-lg bg-white dark:bg-gray-900 border-l border-gray-100 dark:border-gray-800 shadow-2xl flex flex-col h-full animate-in slide-in-from-right duration-300">
               
               {/* Drawer Header */}
               <div className="p-5 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-r from-indigo-50/70 via-white to-violet-50/70 dark:from-gray-900 dark:to-gray-900 flex items-center justify-between">

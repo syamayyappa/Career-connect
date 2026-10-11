@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import API from '../../services/api';
+import ResumeCareerMatcher from '../../components/seeker/ResumeCareerMatcher';
 import { Sparkles, MapPin, DollarSign, Calendar, ChevronRight, Briefcase, Award } from 'lucide-react';
 
 const Recommendations = () => {
@@ -43,18 +44,9 @@ const Recommendations = () => {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10">
+    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
-            <Sparkles className="h-6 w-6 text-indigo-600" /> Recommended for You
-          </h1>
-          <p className="text-sm text-gray-550 dark:text-gray-400 mt-1">
-            AI-assisted job recommendations based on normalized skill matching
-          </p>
-        </div>
-      </div>
+      <ResumeCareerMatcher />
 
       {/* Warning if user has no skills */}
       {user && (!user.skills || user.skills.length === 0) ? (

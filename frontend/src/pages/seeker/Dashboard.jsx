@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import API from '../../services/api';
+import ResumeCareerMatcher from '../../components/seeker/ResumeCareerMatcher';
 import { 
   FileText, 
   CheckCircle, 
@@ -152,6 +153,11 @@ const SeekerDashboard = () => {
               </Link>
             </div>
           </div>
+        </div>
+
+        {/* Core AI Placement Engine: Resume Career Matcher & Skill Gap Advisor */}
+        <div className="mb-10">
+          <ResumeCareerMatcher />
         </div>
 
         {/* Stats Dashboard Grid */}

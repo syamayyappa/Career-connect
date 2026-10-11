@@ -17,12 +17,82 @@ const ApplicationSchema = new mongoose.Schema({
     required: true
   },
   resume: {
-    type: String, // Store the resume file path or filename at the time of application
-    required: [true, 'Resume is required for applying']
+    type: String, // Store resume file path or URL
+    default: ''
   },
   coverLetter: {
     type: String,
-    trim: true
+    trim: true,
+    default: ''
+  },
+  // Candidate Profile Snapshot & Application Details
+  fullName: {
+    type: String,
+    default: ''
+  },
+  email: {
+    type: String,
+    default: ''
+  },
+  phone: {
+    type: String,
+    default: ''
+  },
+  location: {
+    type: String,
+    default: ''
+  },
+  experienceLevel: {
+    type: String,
+    enum: ['Fresher', 'Experienced'],
+    default: 'Fresher'
+  },
+  yearsOfExperience: {
+    type: String,
+    default: '0'
+  },
+  currentlyWorking: {
+    type: Boolean,
+    default: false
+  },
+  currentCompany: {
+    type: String,
+    default: ''
+  },
+  currentRole: {
+    type: String,
+    default: ''
+  },
+  noticePeriod: {
+    type: String,
+    default: 'Immediate'
+  },
+  expectedSalary: {
+    type: String,
+    default: ''
+  },
+  skills: [{
+    type: String
+  }],
+  highestEducation: {
+    type: String,
+    default: ''
+  },
+  college: {
+    type: String,
+    default: ''
+  },
+  graduationYear: {
+    type: String,
+    default: ''
+  },
+  linkedinUrl: {
+    type: String,
+    default: ''
+  },
+  portfolioUrl: {
+    type: String,
+    default: ''
   },
   status: {
     type: String,
@@ -37,3 +107,4 @@ const ApplicationSchema = new mongoose.Schema({
 ApplicationSchema.index({ job: 1, applicant: 1 }, { unique: true });
 
 module.exports = mongoose.model('Application', ApplicationSchema);
+

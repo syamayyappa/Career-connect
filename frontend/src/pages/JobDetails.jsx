@@ -436,12 +436,12 @@ const JobDetails = () => {
                       </p>
                     </div>
                   ) : (
-                    <button
-                      onClick={() => setIsModalOpen(true)}
-                      className="w-full py-3.5 btn-primary-gradient text-white font-bold rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/25 cursor-pointer"
+                    <Link
+                      to={`/jobs/${job._id || id}/apply`}
+                      className="w-full py-3.5 btn-primary-gradient text-white font-bold rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/25 cursor-pointer text-center"
                     >
                       <Send className="h-4 w-4" /> Apply for Vacancy
-                    </button>
+                    </Link>
                   )
                 ) : (
                   <div className="p-3.5 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs text-center font-medium dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800">
@@ -492,14 +492,22 @@ const JobDetails = () => {
                   </a>
                 </div>
               ) : (
-                <div className="mb-6 p-4 bg-rose-50 text-rose-800 border border-rose-200 rounded-2xl text-xs flex items-start gap-2.5">
-                  <AlertTriangle className="h-5 w-5 text-rose-600 shrink-0" />
-                  <div>
-                    <span className="font-bold">No Resume Found</span>
-                    <p className="text-[11px] text-rose-700 mt-1">
-                      Upload your resume in Profile before applying.
-                    </p>
+                <div className="mb-6 p-4 bg-indigo-50/70 border border-indigo-200/80 dark:bg-indigo-950/40 dark:border-indigo-800 rounded-2xl text-xs flex items-center justify-between gap-3">
+                  <div className="flex items-start gap-2.5">
+                    <Sparkles className="h-5 w-5 text-indigo-600 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-bold text-slate-900 dark:text-white">Complete Application Page</span>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                        Provide experience, current work status, skills, and upload your resume directly.
+                      </p>
+                    </div>
                   </div>
+                  <Link
+                    to={`/jobs/${job._id || id}/apply`}
+                    className="shrink-0 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs shadow-xs"
+                  >
+                    Open Form
+                  </Link>
                 </div>
               )}
 
@@ -536,13 +544,12 @@ const JobDetails = () => {
                   >
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    disabled={submitLoading || !user?.resume}
-                    className="px-6 py-2.5 btn-primary-gradient disabled:opacity-50 text-white font-bold rounded-xl text-xs shadow flex items-center gap-1.5 transition cursor-pointer"
+                  <Link
+                    to={`/jobs/${job._id || id}/apply`}
+                    className="px-6 py-2.5 btn-primary-gradient text-white font-bold rounded-xl text-xs shadow flex items-center gap-1.5 transition cursor-pointer"
                   >
-                    {submitLoading ? 'Submitting...' : 'Confirm & Apply'}
-                  </button>
+                    Continue to Application Page
+                  </Link>
                 </div>
               </form>
             </div>

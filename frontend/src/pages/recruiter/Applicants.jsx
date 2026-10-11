@@ -183,11 +183,42 @@ const JobApplicants = () => {
                         {score}% Skill Match
                       </span>
                     </h2>
-                    <div className="flex flex-wrap gap-4 mt-2 text-xs text-gray-450 font-semibold">
-                      <span className="flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {applicant?.email}</span>
-                      {applicant?.phone && <span className="flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {applicant.phone}</span>}
-                      {applicant?.location && <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {applicant.location}</span>}
+                    <div className="flex flex-wrap gap-4 mt-2 text-xs text-gray-450 font-semibold items-center">
+                      <span className="flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {app.email || applicant?.email}</span>
+                      {(app.phone || applicant?.phone) && <span className="flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {app.phone || applicant.phone}</span>}
+                      {(app.location || applicant?.location) && <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {app.location || applicant.location}</span>}
                     </div>
+
+                    {/* Application Profile Pills */}
+                    {(app.experienceLevel || app.currentCompany || app.noticePeriod || app.highestEducation) && (
+                      <div className="flex flex-wrap gap-2 mt-3 text-xs">
+                        {app.experienceLevel && (
+                          <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 rounded-lg font-bold border border-indigo-100 dark:border-indigo-900/40">
+                            {app.experienceLevel === 'Fresher' ? '🎓 Fresher' : `💼 ${app.yearsOfExperience || '1+'} Yrs Experience`}
+                          </span>
+                        )}
+                        {app.currentlyWorking && app.currentCompany && (
+                          <span className="px-2.5 py-1 bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 rounded-lg font-semibold">
+                            🏢 Currently at {app.currentCompany} {app.currentRole ? `(${app.currentRole})` : ''}
+                          </span>
+                        )}
+                        {app.noticePeriod && (
+                          <span className="px-2.5 py-1 bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 rounded-lg font-semibold border border-amber-200/60 dark:border-amber-900/40">
+                            ⏱️ Notice: {app.noticePeriod}
+                          </span>
+                        )}
+                        {app.highestEducation && (
+                          <span className="px-2.5 py-1 bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300 rounded-lg font-semibold border border-teal-200/60 dark:border-teal-900/40">
+                            🎓 {app.highestEducation} {app.college ? `• ${app.college}` : ''}
+                          </span>
+                        )}
+                        {app.expectedSalary && (
+                          <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 rounded-lg font-semibold border border-emerald-200/60 dark:border-emerald-900/40">
+                            💰 Expected: {app.expectedSalary}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {/* Actions & Status Dropdown */}

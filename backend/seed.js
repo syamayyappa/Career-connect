@@ -201,7 +201,7 @@ const seedDataDirectly = async () => {
     { title: 'React UI Developer', companyName: 'Atlassian', jobType: 'Full-time', experience: 'Mid-level', salary: 125000, skills: ['React', 'TypeScript', 'Tailwind CSS', 'Redux', 'Git'], recruiterIndex: 2 },
     { title: 'Data Scientist / ML Engineer', companyName: 'Netflix', jobType: 'Full-time', experience: 'Senior', salary: 195000, skills: ['Python', 'Machine Learning', 'SQL', 'Pandas', 'Numpy'], recruiterIndex: 3 },
     { title: 'E-Commerce Platform Engineer', companyName: 'Shopify', jobType: 'Full-time', experience: 'Mid-level', salary: 130000, skills: ['Ruby', 'Rails', 'React', 'GraphQL', 'MySQL'], recruiterIndex: 4 },
-    
+
     { title: 'Node.js API Lead', companyName: 'Slack', jobType: 'Full-time', experience: 'Senior', salary: 165000, skills: ['Node.js', 'Express', 'Redis', 'SQL', 'Docker'], recruiterIndex: 2 },
     { title: 'Frontend Deployment Engineer', companyName: 'Vercel', jobType: 'Remote', experience: 'Mid-level', salary: 140000, skills: ['Next.js', 'React', 'TypeScript', 'HTML', 'CSS'], recruiterIndex: 0 },
     { title: 'Senior Software Engineer', companyName: 'Infosys Hyderabad', jobType: 'Full-time', experience: 'Senior', salary: 170000, skills: ['Java', 'React', 'AWS', 'MySQL', 'Git'], recruiterIndex: 1 },
@@ -257,7 +257,7 @@ const seedDataDirectly = async () => {
   for (let i = 0; i < 8; i++) {
     const seekerIndex = i;
     const jobIndex = i % jobs.length;
-    
+
     const app = await Application.create({
       job: jobs[jobIndex]._id,
       applicant: seekers[seekerIndex]._id,

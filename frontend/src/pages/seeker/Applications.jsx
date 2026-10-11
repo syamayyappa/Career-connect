@@ -82,8 +82,23 @@ const Applications = () => {
                 <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-gray-500 dark:text-gray-400">
                   <span className="text-gray-900 dark:text-gray-200 font-bold">{app.job?.company?.name || 'Registered Recruiter'}</span>
                   <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5 text-gray-400" /> {app.job?.location}</span>
-                  <span className="flex items-center gap-1"><DollarSign className="h-3.5 w-3.5 text-gray-400" /> ${app.job?.salary?.toLocaleString()}/yr</span>
-                  <span className="flex items-center gap-1 text-[11px] text-gray-400"><Clock className="h-3.5 w-3.5" /> Applied on: {new Date(app.appliedAt).toLocaleDateString()}</span>
+                  {app.job?.salary && <span className="flex items-center gap-1"><DollarSign className="h-3.5 w-3.5 text-gray-400" /> {app.job?.salary}</span>}
+                  <span className="flex items-center gap-1 text-[11px] text-gray-400"><Clock className="h-3.5 w-3.5" /> Applied on: {new Date(app.appliedAt || app.createdAt).toLocaleDateString()}</span>
+                  {app.experienceLevel && (
+                    <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 rounded-md text-[10px] font-bold">
+                      {app.experienceLevel} {app.experienceLevel === 'Experienced' && app.yearsOfExperience ? `(${app.yearsOfExperience} yrs)` : ''}
+                    </span>
+                  )}
+                  {app.resume && (
+                    <a
+                      href={`http://localhost:5000${app.resume}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 underline"
+                    >
+                      View Submitted Resume
+                    </a>
+                  )}
                 </div>
               </div>
 

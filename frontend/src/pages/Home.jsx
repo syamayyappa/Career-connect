@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import API from '../services/api';
+import ResumeCareerMatcher from '../components/seeker/ResumeCareerMatcher';
 import { 
   Search, 
   MapPin, 
@@ -174,8 +175,13 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Core AI Innovation Showcase: Resume Matcher & Career Path Engine */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-6">
+        <ResumeCareerMatcher />
+      </section>
+
       {/* 3. Featured Opportunities Feed */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-12">
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-bold text-xs uppercase tracking-wider mb-2 border border-indigo-200/60 dark:border-indigo-800/60">
