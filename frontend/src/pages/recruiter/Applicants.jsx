@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import API from '../../services/api';
+import API, { getFileUrl } from '../../services/api';
 import { Users, FileText, CheckCircle2, ChevronRight, Download, Mail, Phone, MapPin, Award, Trash2, ArrowLeft, Sparkles, Calendar, Video, Clock, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -255,7 +255,7 @@ const JobApplicants = () => {
                     {app.resume && (
                       <div className="pt-4">
                         <a
-                          href={`http://localhost:5000${app.resume}`}
+                          href={getFileUrl(app.resume)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="px-3.5 py-2 bg-indigo-650 hover:bg-indigo-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5"

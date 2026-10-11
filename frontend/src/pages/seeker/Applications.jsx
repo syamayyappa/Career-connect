@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import API from '../../services/api';
+import API, { getFileUrl } from '../../services/api';
 import { Briefcase, Calendar, MapPin, DollarSign, Award, Clock } from 'lucide-react';
 
 const Applications = () => {
@@ -91,7 +91,7 @@ const Applications = () => {
                   )}
                   {app.resume && (
                     <a
-                      href={`http://localhost:5000${app.resume}`}
+                      href={getFileUrl(app.resume)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 underline"

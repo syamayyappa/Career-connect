@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import API from '../../services/api';
+import API, { getFileUrl } from '../../services/api';
 import ResumeCareerMatcher from '../../components/seeker/ResumeCareerMatcher';
 import { 
   FileText, 
@@ -294,7 +294,7 @@ const SeekerDashboard = () => {
                     </div>
                   </div>
                   <a
-                    href={`http://localhost:5000${user.resume}`}
+                    href={getFileUrl(user.resume)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 bg-white hover:bg-emerald-50 rounded-xl shadow-xs border border-emerald-200 text-emerald-700 transition"

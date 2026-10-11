@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import API from '../../services/api';
+import API, { getFileUrl } from '../../services/api';
 import { User, Phone, MapPin, Award, BookOpen, Briefcase, Plus, Trash2, CheckCircle, FileUp, Download, FileText, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -223,7 +223,7 @@ const Profile = () => {
                   </div>
                 </div>
                 <a
-                  href={`http://localhost:5000${user.resume}`}
+                  href={getFileUrl(user.resume)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 bg-white hover:bg-green-50 rounded-lg shadow-sm border border-green-200 text-green-700 transition"
