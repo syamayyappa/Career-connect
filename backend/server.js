@@ -24,7 +24,7 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-  origin: '*', // We can restrict this in production
+  origin: true, // Dynamically reflect origin to satisfy browser CORS with credentials
   credentials: true
 }));
 app.use(express.json());
