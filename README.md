@@ -4,20 +4,38 @@ CareerConnect AI is a realistic, production-style MERN (MongoDB, Express, React,
 
 ---
 
+## 🌐 Live Deployments & Instant Access
+
+The project is fully deployed, synchronized, and operational online:
+
+- 🚀 **Live Production Frontend (Vercel)**: [https://frontend-gamma-umber-42.vercel.app](https://frontend-gamma-umber-42.vercel.app)
+- ⚙️ **Live Cloud API Backend (Render)**: [https://career-connect-t2k4.onrender.com](https://career-connect-t2k4.onrender.com)
+- 🐙 **Official GitHub Repository**: [https://github.com/syamayyappa/Career-connect](https://github.com/syamayyappa/Career-connect)
+
+### 🔑 Demo Accounts (Pre-Seeded & Ready to Use Anywhere)
+
+| Role | Email | Password | Access Details |
+| :--- | :--- | :--- | :--- |
+| **Job Seeker** | `alex.turner@example.com` | `password123` | AI resume matching, dedicated application flow, job search |
+| **Recruiter** | `sarah@stripe.com` | `password123` | Stripe employer portal, job posting, applicant ATS review |
+| **Admin** | `admin@careerconnect.ai` | `password123` | Platform analytics, user audit, content moderation |
+
+---
+
 ## 🚀 Key Features
 
 ### 👤 Job Seekers
 - **Authentication**: JWT login, secure password encryption.
 - **Dynamic Profile**: Manage location, contact, educational records, work experience, and core skills.
-- **Resume Upload**: Fast document uploading utilizing Multer.
-- **AI Resume Parser**: Automatically extracts skills from uploaded PDF resumes using `pdf-parse` and merges them into the profile skills database.
+- **Dedicated Application Page**: Select Fresher vs Experienced, input current employer details (company, role, notice period, current CTC), qualifications, and skills.
+- **Direct Resume Upload**: Drag-and-drop or file picker with instant attachment and ATS parsing.
 - **AI Recommendation**: Displays ranked job lists with a match percentage (e.g., "85% Match") based on skill intersections.
-- **Job Tracker**: Apply to openings with a cover letter, preventing duplicate applications.
+- **Job Tracker**: Track applications across statuses (Applied, Under Review, Shortlisted, Selected, Rejected).
 
 ### 🏢 Recruiters
 - **Company Branding**: Build company workspace profiles.
 - **Job Publishing**: Publish job vacancies detailing types (Remote/Hybrid/etc.), salary range, and required skills list.
-- **ATS Management**: Manage applicants, view candidate details/resumes, and update application status (Applied, Under Review, Shortlisted, Selected, Rejected).
+- **ATS Management**: Manage applicants, view candidate details/resumes, download resumes, and update application status (Applied, Under Review, Shortlisted, Selected, Rejected).
 - **Consolidated Analytics**: Track totals for jobs posted, applications, shortlisted pools, and hires.
 
 ### 👑 Administrators
@@ -67,34 +85,34 @@ Make sure you have Node.js (version 16 or higher) and MongoDB running locally on
 
 ### Step 1: Clone the repository & Navigate
 ```powershell
-cd C:\Users\Mahesh\.gemini\antigravity\scratch\careerconnect-ai
+git clone https://github.com/syamayyappa/Career-connect.git
+cd Career-connect
 ```
 
-### Step 2: Configure Backend Environment Variables
-Create a file named `.env` inside the `backend` folder:
-```text
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/careerconnect
-JWT_SECRET=your_jwt_secret_key_here
-NODE_ENV=development
-```
-
-### Step 3: Install Backend Dependencies & Start Server
+### Option A: 1-Click Launch (Recommended for Windows)
+Simply double-click:
 ```powershell
-cd backend
-npm install
-npm run dev
+.\start_project.bat
 ```
-The server will boot up and connect to MongoDB on `http://localhost:5000`.
+This automatically boots both the backend API (port 5000) and frontend client (port 5173).
 
-### Step 4: Install Frontend Dependencies & Start Client
-Open a separate terminal window:
-```powershell
-cd C:\Users\Mahesh\.gemini\antigravity\scratch\careerconnect-ai\frontend
-npm install
-npm run dev
-```
-The client will start on `http://localhost:5173`. Open your web browser to start exploring!
+### Option B: Manual Launch
+1. **Start Backend**:
+   ```powershell
+   cd backend
+   npm install
+   npm run dev
+   ```
+   The backend runs on `http://localhost:5000` (auto-connects to MongoDB or starts in-memory MongoDB).
+
+2. **Start Frontend**:
+   In a separate terminal:
+   ```powershell
+   cd frontend
+   npm install
+   npm run dev
+   ```
+   The client will open on `http://localhost:5173`. Open your web browser to start exploring!
 
 ---
 
