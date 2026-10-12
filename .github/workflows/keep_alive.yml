@@ -1,0 +1,15 @@
+name: 24/7 Cloud API Keep-Alive
+
+on:
+  schedule:
+    # Runs every 14 minutes to prevent Render free-tier from entering sleep mode
+    - cron: '*/14 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render Backend Health Check
+        run: |
+          curl -s -f -m 30 https://career-connect-t2k4.onrender.com/api/health || echo "Waking up server..."
