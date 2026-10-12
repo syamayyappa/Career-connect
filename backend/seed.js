@@ -33,12 +33,16 @@ const seedDataDirectly = async () => {
   await Report.deleteMany();
   console.log('Database cleared.');
 
-  // 2. Generate Admin (plain password is automatically hashed by User.pre('save'))
+  // 2. Pre-hash default seed password once to accelerate seeding
+  console.log('Pre-hashing default seed password...');
+  const defaultHashedPassword = await encryptPassword('password123');
+
+  // 2. Generate Admin
   console.log('Seeding admin accounts...');
   const admin = await User.create({
     name: 'System Administrator',
     email: 'admin@careerconnect.ai',
-    password: 'password123',
+    password: defaultHashedPassword,
     role: 'admin',
     phone: '+1 (555) 999-0000',
     location: 'New York, NY'
@@ -54,18 +58,18 @@ const seedDataDirectly = async () => {
     { name: 'Aisha Rahman', email: 'aisha@shopify.com', companyName: 'Shopify' }
   ];
 
-  const recruiters = [];
-  for (const r of recruitersData) {
-    const userRec = await User.create({
-      name: r.name,
-      email: r.email,
-      password: 'password123',
-      role: 'recruiter',
-      phone: '+1 (555) 123-4567',
-      location: 'San Francisco, CA'
-    });
-    recruiters.push(userRec);
-  }
+  const recruiters = await Promise.all(
+    recruitersData.map((r) =>
+      User.create({
+        name: r.name,
+        email: r.email,
+        password: defaultHashedPassword,
+        role: 'recruiter',
+        phone: '+1 (555) 123-4567',
+        location: 'San Francisco, CA'
+      })
+    )
+  );
 
   // 4. Generate Companies
   console.log('Seeding company workspaces...');
@@ -119,7 +123,7 @@ const seedDataDirectly = async () => {
   const alexUser = await User.create({
     name: 'Alex Turner',
     email: 'alex.turner@example.com',
-    password: 'password123',
+    password: defaultHashedPassword,
     role: 'seeker',
     phone: '+1 (555) 234-5678',
     location: 'San Francisco, CA',
@@ -153,14 +157,16 @@ const seedDataDirectly = async () => {
   });
   seekers.push(alexUser);
 
+  const candidatePromises = [];
   for (let i = 1; i <= 15; i++) {
     const skills = skillsList[(i - 1) % skillsList.length];
-    const seeker = await User.create({
-      name: `Candidate ${i}`,
-      email: `seeker${i}@gmail.com`,
-      password: 'password123',
-      role: 'seeker',
-      phone: `+1 (555) 234-567${i % 10}`,
+    candidatePromises.push(
+      User.create({
+        name: `Candidate ${i}`,
+        email: `seeker${i}@gmail.com`,
+        password: defaultHashedPassword,
+        role: 'seeker',
+        phone: `+1 (555) 234-567${i % 10}`,
       location: i % 2 === 0 ? 'San Francisco, CA' : 'Remote',
       headline: `Software Engineer | Specialties: ${skills.slice(0, 3).join(', ')}`,
       about: `Hi, I am Candidate ${i}. A passionate software developer with core industry focus in modern web stacks and clean code principles.`,
@@ -189,9 +195,11 @@ const seedDataDirectly = async () => {
       preferredJobType: i % 3 === 0 ? 'Remote' : 'Full-time',
       preferredLocation: 'San Francisco, CA',
       resume: '/uploads/sample-resume.pdf' // Placeholder path
-    });
-    seekers.push(seeker);
+      })
+    );
   }
+  const otherSeekers = await Promise.all(candidatePromises);
+  seekers.push(...otherSeekers);
 
   // 6. Generate Jobs (20+ listings)
   console.log('Seeding job postings (20+ listings)...');

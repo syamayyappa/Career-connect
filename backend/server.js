@@ -60,18 +60,12 @@ app.use(notFound);
 app.use(errorHandler);
 
 // Start Server Function
-const startServer = async () => {
-  try {
-    // Connect to Database
-    await connectDB();
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+});
 
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-      console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error('Failed to start server:', error);
-  }
-};
-
-startServer();
+// Connect to Database
+connectDB().catch((error) => {
+  console.error('Failed to connect to database:', error);
+});

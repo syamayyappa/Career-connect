@@ -23,8 +23,12 @@ const Login = () => {
     setErrorMsg('');
 
     try {
-      const res = await login(email, password);
-      if (res.success) {
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('TIMEOUT_EXCEEDED')), 16000)
+      );
+
+      const res = await Promise.race([login(email, password), timeoutPromise]);
+      if (res && res.success) {
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
         if (userInfo.role === 'seeker') {
           navigate('/seeker/dashboard');
@@ -36,10 +40,14 @@ const Login = () => {
           navigate('/');
         }
       } else {
-        setErrorMsg(res.message || 'Login failed. Please check your credentials.');
+        setErrorMsg(res?.message || 'Login failed. Please check your credentials.');
       }
     } catch (err) {
-      setErrorMsg('An unexpected error occurred during login.');
+      if (err.message === 'TIMEOUT_EXCEEDED') {
+        setErrorMsg('Server response timed out. If testing locally, please ensure the backend is running on port 5000 (run start_project.bat).');
+      } else {
+        setErrorMsg(err.message || 'An unexpected error occurred during login.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -121,7 +129,10 @@ const Login = () => {
             className="w-full py-3.5 btn-primary-gradient text-white font-bold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 transition disabled:opacity-50 shadow-md shadow-indigo-600/25 cursor-pointer mt-2"
           >
             {isSubmitting ? (
-              <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+              <>
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                <span>Signing In...</span>
+              </>
             ) : (
               <>
                 <LogIn className="h-4 w-4" />
